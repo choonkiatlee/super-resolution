@@ -41,7 +41,7 @@ class NormalizeLayer(tf.keras.layers.Layer):
 class DenormalizeLayer(tf.keras.layers.Layer):
     def __init__(self):
         self.rgb_mean = tf.constant([0.4488, 0.4371, 0.4040]) * 255
-        super(NormalizeLayer, self).__init__()
+        super(DenormalizeLayer, self).__init__()
 
     def call(self, inputs):
         return inputs * 127.5 + self.rgb_mean
@@ -52,7 +52,7 @@ class DenormalizeLayer(tf.keras.layers.Layer):
 class PixelShuffleLayer(tf.keras.layers.Layer):
     def __init__(self, scale):
         self.scale = scale
-        super(NormalizeLayer, self).__init__()
+        super(PixelShuffleLayer, self).__init__()
 
     def call(self, inputs):
         return tf.nn.depth_to_space(inputs, self.scale)
