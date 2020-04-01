@@ -27,12 +27,34 @@ class NormalizeLayer(tf.keras.layers.Layer):
     def get_config(self):
         return {'rgb_mean': self.rgb_mean}
 
+class NormalizeLayer(tf.keras.layers.Layer):
+    def __init__(self):
+        self.rgb_mean = tf.constant([0.4488, 0.4371, 0.4040]) * 255
+        super(NormalizeLayer, self).__init__()
+
+    def call(self, inputs):
+        return (inputs - self.rgb_mean) / 127.5
+
+    def get_config(self):
+        return {'rgb_mean': self.rgb_mean}
+
+class DenormalizeLayer(tf.keras.layers.Layer):
+    def __init__(self):
+        self.rgb_mean = tf.constant([0.4488, 0.4371, 0.4040]) * 255
+        super(NormalizeLayer, self).__init__()
+
+    def call(self, inputs):
+        return inputs * 127.5 + self.rgb_mean
+
+    def get_config(self):
+        return {'rgb_mean': self.rgb_mean}
+
 
 
 def wdsr(scale, num_filters, num_res_blocks, res_block_expansion, res_block_scaling, res_block):
     x_in = Input(shape=(None, None, 3))
-    # x = Lambda(normalize)(x_in)
 
+    # x = Lambda(normalize)(x_in)
     x = NormalizeLayer()(x_in)
 
     # main branch
@@ -47,7 +69,9 @@ def wdsr(scale, num_filters, num_res_blocks, res_block_expansion, res_block_scal
     s = Lambda(pixel_shuffle(scale))(s)
 
     x = Add()([m, s])
-    x = Lambda(denormalize)(x)
+
+    # x = Lambda(denormalize)(x)
+    x = DenormalizeLayer()(x)
 
     return Model(x_in, x, name="wdsr")
 
