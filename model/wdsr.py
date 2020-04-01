@@ -123,8 +123,8 @@ def res_block_b(x_in, num_filters, expansion, kernel_size, scaling):
     return x
 
 
-def conv2d_weightnorm(filters, kernel_size, padding='same', activation=None, **kwargs):
-    return Conv2D(filters, kernel_size, padding=padding, activation=activation, **kwargs)
-
 # def conv2d_weightnorm(filters, kernel_size, padding='same', activation=None, **kwargs):
-#     return tfa.layers.WeightNormalization(Conv2D(filters, kernel_size, padding=padding, activation=activation, **kwargs), data_init=False)
+#     return Conv2D(filters, kernel_size, padding=padding, activation=activation, **kwargs)
+
+def conv2d_weightnorm(filters, kernel_size, padding='same', activation=None, **kwargs):
+    return tfa.layers.WeightNormalization(Conv2D(filters, kernel_size, padding=padding, activation=activation, **kwargs), data_init=False)
