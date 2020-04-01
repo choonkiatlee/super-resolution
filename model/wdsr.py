@@ -33,7 +33,7 @@ def wdsr(scale, num_filters, num_res_blocks, res_block_expansion, res_block_scal
     x_in = Input(shape=(None, None, 3))
     # x = Lambda(normalize)(x_in)
 
-    x = NormalizeLayer(x_in)
+    x = NormalizeLayer()(x_in)
 
     # main branch
     m = conv2d_weightnorm(num_filters, 3, padding='same')(x)
