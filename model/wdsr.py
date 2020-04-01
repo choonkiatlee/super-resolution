@@ -75,8 +75,8 @@ class ScalingLayer(tf.keras.layers.Layer):
 def wdsr(scale, num_filters, num_res_blocks, res_block_expansion, res_block_scaling, res_block):
     x_in = Input(shape=(None, None, 3))
 
-    # x = Lambda(normalize)(x_in)
-    x = NormalizeLayer()(x_in)
+    x = Lambda(normalize)(x_in)
+    # x = NormalizeLayer()(x_in)
 
     # main branch
     m = conv2d_weightnorm(num_filters, 3, padding='same')(x)
@@ -84,19 +84,19 @@ def wdsr(scale, num_filters, num_res_blocks, res_block_expansion, res_block_scal
         m = res_block(m, num_filters, res_block_expansion, kernel_size=3, scaling=res_block_scaling)
     m = conv2d_weightnorm(3 * scale ** 2, 3, padding='same', name=f'conv2d_main_scale_{scale}')(m)
     
-    # m = Lambda(pixel_shuffle(scale))(m)
-    m = PixelShuffleLayer(scale)(m)
+    m = Lambda(pixel_shuffle(scale))(m)
+    # m = PixelShuffleLayer(scale)(m)
 
     # skip branch
     s = conv2d_weightnorm(3 * scale ** 2, 5, padding='same', name=f'conv2d_skip_scale_{scale}')(x)
     
-    # s = Lambda(pixel_shuffle(scale))(s)
-    s = PixelShuffleLayer(scale)(s)
+    s = Lambda(pixel_shuffle(scale))(s)
+    # s = PixelShuffleLayer(scale)(s)
 
     x = Add()([m, s])
 
-    # x = Lambda(denormalize)(x)
-    x = DenormalizeLayer()(x)
+    x = Lambda(denormalize)(x)
+    # x = DenormalizeLayer()(x)
 
     return Model(x_in, x, name="wdsr")
 
@@ -105,8 +105,8 @@ def res_block_a(x_in, num_filters, expansion, kernel_size, scaling):
     x = conv2d_weightnorm(num_filters * expansion, kernel_size, padding='same', activation='relu')(x_in)
     x = conv2d_weightnorm(num_filters, kernel_size, padding='same')(x)
     if scaling:
-        # x = Lambda(lambda t: t * scaling)(x)
-        x = ScalingLayer(scaling)
+        x = Lambda(lambda t: t * scaling)(x)
+        # x = ScalingLayer(scaling)
     x = Add()([x_in, x])
     return x
 
@@ -117,8 +117,8 @@ def res_block_b(x_in, num_filters, expansion, kernel_size, scaling):
     x = conv2d_weightnorm(int(num_filters * linear), 1, padding='same')(x)
     x = conv2d_weightnorm(num_filters, kernel_size, padding='same')(x)
     if scaling:
-        # x = Lambda(lambda t: t * scaling)(x)
-        x = ScalingLayer(scaling)
+        x = Lambda(lambda t: t * scaling)(x)
+        # x = ScalingLayer(scaling)
     x = Add()([x_in, x])
     return x
 
