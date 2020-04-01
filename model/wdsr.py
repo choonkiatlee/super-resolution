@@ -5,6 +5,8 @@ from tensorflow.python.keras.models import Model
 
 from model.common import normalize, denormalize, pixel_shuffle
 
+import tensorflow as tf
+
 
 def wdsr_a(scale, num_filters=32, num_res_blocks=8, res_block_expansion=4, res_block_scaling=None):
     return wdsr(scale, num_filters, num_res_blocks, res_block_expansion, res_block_scaling, res_block_a)
@@ -14,9 +16,24 @@ def wdsr_b(scale, num_filters=32, num_res_blocks=8, res_block_expansion=6, res_b
     print("Created wdsr_b model")
     return wdsr(scale, num_filters, num_res_blocks, res_block_expansion, res_block_scaling, res_block_b)
 
+class NormalizeLayer(tensorflow.keras.layers.Layer):
+    def __init__(self):
+        self.rgb_mean = tf.constant([0.4488, 0.4371, 0.4040]) * 255
+        super(NormalizeLayer, self).__init__()
+
+    def call(self, inputs):
+        return (inputs - rgb_mean) / 127.5
+
+    def get_config(self):
+        return {'units': self.units}
+
+
+
 def wdsr(scale, num_filters, num_res_blocks, res_block_expansion, res_block_scaling, res_block):
     x_in = Input(shape=(None, None, 3))
-    x = Lambda(normalize)(x_in)
+    # x = Lambda(normalize)(x_in)
+
+    x = NormalizeLayer(x_in)
 
     # main branch
     m = conv2d_weightnorm(num_filters, 3, padding='same')(x)
