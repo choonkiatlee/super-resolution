@@ -83,7 +83,9 @@ def wdsr(scale, num_filters, num_res_blocks, res_block_expansion, res_block_scal
     for i in range(num_res_blocks):
         m = res_block(m, num_filters, res_block_expansion, kernel_size=3, scaling=res_block_scaling)
     m = conv2d_weightnorm(3 * scale ** 2, 3, padding='same', name=f'conv2d_main_scale_{scale}')(m)
-    m = Lambda(pixel_shuffle(scale))(m)
+    
+    # m = Lambda(pixel_shuffle(scale))(m)
+    m = PixelShuffleLayer(scale)(m)
 
     # skip branch
     s = conv2d_weightnorm(3 * scale ** 2, 5, padding='same', name=f'conv2d_skip_scale_{scale}')(x)
