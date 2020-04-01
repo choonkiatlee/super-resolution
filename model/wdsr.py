@@ -60,6 +60,18 @@ class PixelShuffleLayer(tf.keras.layers.Layer):
     def get_config(self):
         return {'scale': self.scale}
 
+class ScalingLayer(tf.keras.layers.Layer):
+    def __init__(self, scale):
+        self.scale = scale
+        super(ScalingLayer, self).__init__()
+
+    def call(self, inputs):
+        return inputs * self.scale
+
+    def get_config(self):
+        return {'scale': self.scale}
+
+
 def wdsr(scale, num_filters, num_res_blocks, res_block_expansion, res_block_scaling, res_block):
     x_in = Input(shape=(None, None, 3))
 
@@ -91,7 +103,8 @@ def res_block_a(x_in, num_filters, expansion, kernel_size, scaling):
     x = conv2d_weightnorm(num_filters * expansion, kernel_size, padding='same', activation='relu')(x_in)
     x = conv2d_weightnorm(num_filters, kernel_size, padding='same')(x)
     if scaling:
-        x = Lambda(lambda t: t * scaling)(x)
+        # x = Lambda(lambda t: t * scaling)(x)
+        x = ScalingLayer(scaling)
     x = Add()([x_in, x])
     return x
 
@@ -102,7 +115,8 @@ def res_block_b(x_in, num_filters, expansion, kernel_size, scaling):
     x = conv2d_weightnorm(int(num_filters * linear), 1, padding='same')(x)
     x = conv2d_weightnorm(num_filters, kernel_size, padding='same')(x)
     if scaling:
-        x = Lambda(lambda t: t * scaling)(x)
+        # x = Lambda(lambda t: t * scaling)(x)
+        x = ScalingLayer(scaling)
     x = Add()([x_in, x])
     return x
 
