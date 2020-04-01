@@ -22,7 +22,7 @@ class NormalizeLayer(tf.keras.layers.Layer):
         super(NormalizeLayer, self).__init__()
 
     def call(self, inputs):
-        return (inputs - rgb_mean) / 127.5
+        return (inputs - self.rgb_mean) / 127.5
 
     def get_config(self):
         return {'rgb_mean': self.rgb_mean}
