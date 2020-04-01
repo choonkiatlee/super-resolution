@@ -265,9 +265,9 @@ class WeightNormalization(tf.keras.layers.Wrapper):
         """
         with tf.control_dependencies(
             [
-                tf.debugging.assert_equal(  # pylint: disable=bad-continuation
-                    self._initialized, False, message="The layer has been initialized."
-                )
+                # tf.debugging.assert_equal(  # pylint: disable=bad-continuation
+                #     self._initialized, False, message="The layer has been initialized."
+                # )
             ]
         ):
             if self.data_init:
