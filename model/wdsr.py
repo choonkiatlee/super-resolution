@@ -49,7 +49,16 @@ class DenormalizeLayer(tf.keras.layers.Layer):
     def get_config(self):
         return {'rgb_mean': self.rgb_mean}
 
+class PixelShuffleLayer(tf.keras.layers.Layer):
+    def __init__(self, scale):
+        self.scale = scale
+        super(NormalizeLayer, self).__init__()
 
+    def call(self, inputs):
+        return tf.nn.depth_to_space(inputs, self.scale)
+
+    def get_config(self):
+        return {'scale': self.scale}
 
 def wdsr(scale, num_filters, num_res_blocks, res_block_expansion, res_block_scaling, res_block):
     x_in = Input(shape=(None, None, 3))
@@ -66,7 +75,9 @@ def wdsr(scale, num_filters, num_res_blocks, res_block_expansion, res_block_scal
 
     # skip branch
     s = conv2d_weightnorm(3 * scale ** 2, 5, padding='same', name=f'conv2d_skip_scale_{scale}')(x)
-    s = Lambda(pixel_shuffle(scale))(s)
+    
+    # s = Lambda(pixel_shuffle(scale))(s)
+    s = PixelShuffleLayer(scale)(s)
 
     x = Add()([m, s])
 
