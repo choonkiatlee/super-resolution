@@ -41,8 +41,8 @@ cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
                                                  save_weights_only=True,
                                                  verbose=1)
 
-# log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-# tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 
 STEPS_PER_EPOCH = 800//256
 
@@ -67,6 +67,6 @@ our_model.fit(
     validation_data=valid_ds, 
     epochs = 100,
     steps_per_epoch=STEPS_PER_EPOCH, 
-    callbacks=[cp_callback],
+    callbacks=[cp_callback, tensorboard_callback],
     verbose=1
 )
