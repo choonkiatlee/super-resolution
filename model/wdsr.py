@@ -209,7 +209,7 @@ class OurWeightNormalization(tf.keras.layers.Wrapper):
             name="initialized",
             shape=None,
             initializer="zeros",
-            dtype=tf.dtypes.bool,
+            dtype=tf.dtypes.uint8,
             trainable=False,
         )
 
