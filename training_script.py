@@ -59,6 +59,7 @@ def psnr(y_true, y_pred):
     return tf.image.psnr(y_true, y_pred, max_val=255)
 
 if os.path.exists('saved_model') and LOAD_SAVED_MODEL:
+    print("Loaded previously saved model")
     our_model = tf.keras.models.load_model('saved_model', custom_objects={'psnr': psnr})
 
 else:
@@ -72,7 +73,7 @@ else:
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 initial_epoch = our_model.optimizer.iterations.numpy() // STEPS_PER_EPOCH
-
+print("Starting on initial epoch: {0}".format(initial_epoch))
 
 our_model.fit(
     train_ds, 
