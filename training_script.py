@@ -81,7 +81,7 @@ def resolve_and_tensorboard_plot(our_model, lr_image_path):
     image = tf.expand_dims(image, 0)
 
     with tb_file_writer.as_default():
-        tf.summary.image("Final Evaluated Images", image, step=0)
+        tf.summary.image("Evaluated Img {0}".format(lr_image_path), image, step=0)
 
 if os.path.exists('saved_model') and LOAD_SAVED_MODEL:
     print("Loaded previously saved model")
@@ -113,8 +113,6 @@ our_model.fit(
     callbacks=[cp_callback, tensorboard_callback],
     verbose=1,
 )
-
-
 
 resolve_and_tensorboard_plot(our_model, 'demo/0869x4-crop.png')
 resolve_and_tensorboard_plot(our_model, 'demo/0829x4-crop.png')
