@@ -71,13 +71,18 @@ else:
 
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
+initial_epoch = our_model.optimizer.iterations.numpy() // STEPS_PER_EPOCH
+
+
 our_model.fit(
     train_ds, 
     validation_data=valid_ds.take(10), 
     epochs = 100,
     steps_per_epoch=STEPS_PER_EPOCH, 
+    initial_epoch=initial_epoch,
     callbacks=[cp_callback, tensorboard_callback],
-    verbose=1
+    verbose=1,
+    
 )
 
 our_model.save('saved_model')
