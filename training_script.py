@@ -7,6 +7,7 @@ import train
 # from train import WdsrTrainer
 
 import tensorflow as tf
+import datetime
 
 # Number of residual blocks
 depth = 32
