@@ -22,3 +22,23 @@ def plot_sample(lr, sr):
         plt.yticks([])
 
     return fig
+
+
+def plot_samples(samples):
+    fig = plt.figure(figsize=(20, 10))
+
+    for i, (lr,sr) in enumerate(samples):
+
+        titles = ['LR', f'SR (x{sr.shape[0] // lr.shape[0]})']
+
+        plt.subplot(i, 2, 1)
+        plt.imshow(lr)
+        plt.title(titles[0])
+
+        plt.subplot(i,2,2)
+        plt.imshow(sr)
+        plt.title(titles[1])
+
+        plt.xticks([])
+        plt.yticks([])
+    return fig

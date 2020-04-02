@@ -60,14 +60,21 @@ def psnr(y_true, y_pred):
     return tf.image.psnr(y_true, y_pred, max_val=255)
 
 from model import resolve_single
-from utils import load_image, plot_sample
+from utils import load_image, plot_samples
 import io
 
-def resolve_and_tensorboard_plot(our_model, lr_image_path, title=''):
-    lr = load_image(lr_image_path)
-    sr = resolve_single(our_model, lr)
+def resolve_and_tensorboard_plot(our_model, lr_image_paths, title=''):
+
+    samples = []
+
+    for lr_image_path in lr_image_paths:
+
+        lr = load_image(lr_image_path)
+        sr = resolve_single(our_model, lr)
+        samples.append((lr,sr))
+
     
-    fig = plot_sample(lr, sr)
+    fig = plot_samples(samples)
 
     buf = io.BytesIO()
     plt.savefig(buf, format='png')
@@ -95,9 +102,7 @@ else:
         metrics=[psnr],
     )
 
-resolve_and_tensorboard_plot(our_model, 'demo/0869x4-crop.png', "Start 1")
-resolve_and_tensorboard_plot(our_model, 'demo/0829x4-crop.png', "Start 2")
-resolve_and_tensorboard_plot(our_model, 'demo/0851x4-crop.png', "Start 3")
+resolve_and_tensorboard_plot(our_model, ['demo/0869x4-crop.png', 'demo/0829x4-crop.png', 'demo/0851x4-crop.png'], "Start")
 
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
@@ -114,8 +119,6 @@ our_model.fit(
     verbose=1,
 )
 
-resolve_and_tensorboard_plot(our_model, 'demo/0869x4-crop.png', "End 1")
-resolve_and_tensorboard_plot(our_model, 'demo/0829x4-crop.png', "End 2")
-resolve_and_tensorboard_plot(our_model, 'demo/0851x4-crop.png', "End 3")
+resolve_and_tensorboard_plot(our_model, ['demo/0869x4-crop.png', 'demo/0829x4-crop.png', 'demo/0851x4-crop.png'], "End")
 
 our_model.save('saved_model')
