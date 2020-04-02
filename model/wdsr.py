@@ -329,4 +329,4 @@ class OurWeightNormalization(tf.keras.layers.Wrapper):
         return self.layer
 
 def conv2d_weightnorm(filters, kernel_size, padding='same', activation=None, **kwargs):
-    return OurWeightNormalization(Conv2D(filters, kernel_size, padding=padding, activation=activation, **kwargs), data_init=True)
+    return OurWeightNormalization(Conv2D(filters, kernel_size, padding=padding, activation=activation, **kwargs), data_init=False)
