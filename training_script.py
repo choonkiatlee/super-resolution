@@ -58,9 +58,6 @@ def get_optimizer():
 our_model.compile(
     optimizer=get_optimizer(), 
     loss='mae',
-    metrics=[
-        'accuracy'
-        ]
 )
 
 our_model.fit(
