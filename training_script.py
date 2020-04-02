@@ -9,6 +9,8 @@ import train
 import tensorflow as tf
 import datetime
 
+LOAD_SAVED_MODEL = True
+
 # Number of residual blocks
 depth = 32
 
@@ -29,8 +31,6 @@ div2k_valid = DIV2K(scale=scale, subset='valid', downgrade=downgrade)
 
 train_ds = div2k_train.dataset(batch_size=256, random_transform=True)
 valid_ds = div2k_valid.dataset(batch_size=1, random_transform=False, repeat_count=1)
-
-our_model = wdsr.wdsr_b(scale=scale, num_res_blocks=depth)
 
 
 checkpoint_path = "training_1/cp.ckpt"
@@ -55,10 +55,15 @@ lr_schedule = tf.keras.optimizers.schedules.InverseTimeDecay(
 def get_optimizer():
   return tf.keras.optimizers.Adam(lr_schedule)
 
-our_model.compile(
-    optimizer=get_optimizer(), 
-    loss='mae',
-)
+if os.path.exists('saved_model') and LOAD_SAVED_MODEL:
+    our_model = tf.keras.models.load_model('saved_model')
+
+else:
+    our_model = wdsr.wdsr_b(scale=scale, num_res_blocks=depth)
+    our_model.compile(
+        optimizer=get_optimizer(), 
+        loss='mae',
+    )
 
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
@@ -70,3 +75,5 @@ our_model.fit(
     callbacks=[cp_callback, tensorboard_callback],
     verbose=1
 )
+
+our_model.save('saved_model')
