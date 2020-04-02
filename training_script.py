@@ -27,7 +27,7 @@ os.makedirs(weights_dir, exist_ok=True)
 div2k_train = DIV2K(scale=scale, subset='train', downgrade=downgrade)
 div2k_valid = DIV2K(scale=scale, subset='valid', downgrade=downgrade)
 
-train_ds = div2k_train.dataset(batch_size=512, random_transform=True)
+train_ds = div2k_train.dataset(batch_size=256, random_transform=True)
 valid_ds = div2k_valid.dataset(batch_size=32, random_transform=False, repeat_count=1)
 
 our_model = wdsr.wdsr_b(scale=scale, num_res_blocks=depth)
