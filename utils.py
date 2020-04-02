@@ -9,7 +9,7 @@ def load_image(path):
 
 
 def plot_sample(lr, sr):
-    plt.figure(figsize=(20, 10))
+    fig = plt.figure(figsize=(20, 10))
 
     images = [lr, sr]
     titles = ['LR', f'SR (x{sr.shape[0] // lr.shape[0]})']
@@ -20,3 +20,5 @@ def plot_sample(lr, sr):
         plt.title(title)
         plt.xticks([])
         plt.yticks([])
+
+    return fig

@@ -43,6 +43,7 @@ cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_path,
 
 log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+tb_file_writer = tf.summary.create_file_writer(log_dir)
 
 STEPS_PER_EPOCH = 800//256
 
@@ -58,6 +59,30 @@ def get_optimizer():
 def psnr(y_true, y_pred):
     return tf.image.psnr(y_true, y_pred, max_val=255)
 
+from model import resolve_single
+from utils import load_image, plot_sample
+import io
+
+def resolve_and_tensorboard_plot(our_model, lr_image_path):
+    lr = load_image(lr_image_path)
+    sr = resolve_single(our_model, lr)
+    
+    fig = plot_sample(lr, sr)
+
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    # Closing the figure prevents it from being displayed directly inside
+    # the notebook.
+    plt.close(fig)
+    buf.seek(0)
+    # Convert PNG buffer to TF image
+    image = tf.image.decode_png(buf.getvalue(), channels=4)
+    # Add the batch dimension
+    image = tf.expand_dims(image, 0)
+
+    with tb_file_writer.as_default():
+        tf.summary.image("Final Evaluated Images", image, step=0)
+
 if os.path.exists('saved_model') and LOAD_SAVED_MODEL:
     print("Loaded previously saved model")
     our_model = tf.keras.models.load_model('saved_model', custom_objects={'psnr': psnr})
@@ -69,6 +94,10 @@ else:
         loss='mae',
         metrics=[psnr],
     )
+
+resolve_and_tensorboard_plot(our_model, 'demo/0869x4-crop.png')
+resolve_and_tensorboard_plot(our_model, 'demo/0829x4-crop.png')
+resolve_and_tensorboard_plot(our_model, 'demo/0851x4-crop.png')
 
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
@@ -83,7 +112,12 @@ our_model.fit(
     initial_epoch=initial_epoch,
     callbacks=[cp_callback, tensorboard_callback],
     verbose=1,
-    
 )
+
+
+
+resolve_and_tensorboard_plot(our_model, 'demo/0869x4-crop.png')
+resolve_and_tensorboard_plot(our_model, 'demo/0829x4-crop.png')
+resolve_and_tensorboard_plot(our_model, 'demo/0851x4-crop.png')
 
 our_model.save('saved_model')
