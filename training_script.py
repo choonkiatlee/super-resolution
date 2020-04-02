@@ -28,7 +28,7 @@ div2k_train = DIV2K(scale=scale, subset='train', downgrade=downgrade)
 div2k_valid = DIV2K(scale=scale, subset='valid', downgrade=downgrade)
 
 train_ds = div2k_train.dataset(batch_size=256, random_transform=True)
-valid_ds = div2k_valid.dataset(batch_size=8, random_transform=False, repeat_count=1)
+valid_ds = div2k_valid.dataset(batch_size=25, random_transform=False, repeat_count=1)
 
 our_model = wdsr.wdsr_b(scale=scale, num_res_blocks=depth)
 
@@ -64,7 +64,7 @@ tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 our_model.fit(
     train_ds, 
-    validation_data=valid_ds.take(24), 
+    validation_data=valid_ds, 
     epochs = 100,
     steps_per_epoch=STEPS_PER_EPOCH, 
     callbacks=[cp_callback],
