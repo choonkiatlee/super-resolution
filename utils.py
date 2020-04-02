@@ -31,11 +31,11 @@ def plot_samples(samples):
 
         titles = ['LR', f'SR (x{sr.shape[0] // lr.shape[0]})']
 
-        plt.subplot(i, 2, 1)
+        plt.subplot(len(samples), 2, 2*i + 1)
         plt.imshow(lr)
         plt.title(titles[0])
 
-        plt.subplot(i,2,2)
+        plt.subplot(len(samples), 2, 2*i + 2)
         plt.imshow(sr)
         plt.title(titles[1])
 
