@@ -55,6 +55,11 @@ lr_schedule = tf.keras.optimizers.schedules.InverseTimeDecay(
 def get_optimizer():
   return tf.keras.optimizers.Adam(lr_schedule)
 
+def psnr(y_true, y_pred):
+    return tf.image.psnr(y_true, y_pred, max_val=255)
+
+
+
 if os.path.exists('saved_model') and LOAD_SAVED_MODEL:
     our_model = tf.keras.models.load_model('saved_model')
 
@@ -63,6 +68,7 @@ else:
     our_model.compile(
         optimizer=get_optimizer(), 
         loss='mae',
+        metrics=[psnr],
     )
 
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
