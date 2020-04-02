@@ -58,10 +58,8 @@ def get_optimizer():
 def psnr(y_true, y_pred):
     return tf.image.psnr(y_true, y_pred, max_val=255)
 
-
-
 if os.path.exists('saved_model') and LOAD_SAVED_MODEL:
-    our_model = tf.keras.models.load_model('saved_model')
+    our_model = tf.keras.models.load_model('saved_model', custom_objects={'psnr': psnr})
 
 else:
     our_model = wdsr.wdsr_b(scale=scale, num_res_blocks=depth)
