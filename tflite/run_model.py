@@ -41,7 +41,7 @@ dataset_path = "/home/finderr/super-resolution/.div2k/images/DIV2K_train_LR_bicu
 
 input_pic = load_image(os.path.join(dataset_path, '0293x4.png'))
 input_data = tf.expand_dims(input_pic, axis=0)
-input_data = tf.cast(input_pic, tf.float32)
+input_data = tf.cast(input_data, tf.float32)
 
 interpreter.set_tensor(input_details[0]['index'], input_data)
 
