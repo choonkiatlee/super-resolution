@@ -39,7 +39,9 @@ input_shape = input_details[0]['shape']
 
 dataset_path = "/home/finderr/super-resolution/.div2k/images/DIV2K_train_LR_bicubic/X4"
 
-input_data = load_image(os.path.join(dataset_path, '0293x4.png'))
+input_pic = load_image(os.path.join(dataset_path, '0293x4.png'))
+input_data = tf.cast(input_pic, tf.float32)
+
 interpreter.set_tensor(input_details[0]['index'], input_data)
 
 interpreter.invoke()
@@ -47,6 +49,10 @@ interpreter.invoke()
 # The function `get_tensor()` returns a copy of the tensor data.
 # Use `tensor()` in order to get a pointer to the tensor.
 output_data = interpreter.get_tensor(output_details[0]['index'])
+
+output_data = tf.clip_by_value(output_data, 0, 255)
+output_data = tf.round(output_data)
+output_data = tf.cast(output_data, tf.uint8)
 
 fig = plot_sample(input_data, output_data)
 
