@@ -36,8 +36,12 @@ output_details = interpreter.get_output_details()
 
 # Test model on random input data.
 input_shape = input_details[0]['shape']
-
 print(input_shape)
+
+output_shape = output_details[0]['shape']
+print(output_shape)
+
+
 dataset_path = "/home/finderr/super-resolution/.div2k/images/DIV2K_train_LR_bicubic/X4"
 
 input_pic = load_image(os.path.join(dataset_path, '0293x4.png'))
