@@ -81,7 +81,6 @@ def resolve_and_tensorboard_plot(our_model, lr_image_paths, title=''):
         sr = resolve_single(our_model, lr)
         samples.append((lr,sr))
 
-    
     fig = plot_samples(samples)
 
     buf = io.BytesIO()

@@ -24,7 +24,7 @@ def plot_sample(lr, sr):
     return fig
 
 
-def plot_samples(samples):
+def plot_samples(samples, interpolate_lr=False):
     fig = plt.figure(figsize=(20, 10))
 
     for i, (lr,sr) in enumerate(samples):
@@ -32,6 +32,12 @@ def plot_samples(samples):
         titles = ['LR', f'SR (x{sr.shape[0] // lr.shape[0]})']
 
         plt.subplot(len(samples), 2, 2*i + 1)
+
+        if interpolate_lr:
+            lr_img = Image.fromarray(lr)
+            interpolated = lr_img.resize(sr.shape, resample=Image.BILINEAR)
+            lr = np.array(interpolated)
+            
         plt.imshow(lr)
         plt.title(titles[0])
 
