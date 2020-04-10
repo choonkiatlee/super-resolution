@@ -86,7 +86,7 @@ class DIV2K:
         if not os.path.exists(self._lr_images_dir()):
             download_archive(self._lr_images_archive(), self.images_dir, extract=True)
 
-        ds = self._images_dataset(self._lr_image_files(channels=channels)).cache(self._lr_cache_file())
+        ds = self._images_dataset(self._lr_image_files(), channels=channels).cache(self._lr_cache_file())
 
         if not os.path.exists(self._lr_cache_index()):
             self._populate_cache(ds, self._lr_cache_file())
