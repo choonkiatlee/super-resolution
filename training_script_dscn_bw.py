@@ -33,11 +33,11 @@ weights_file = os.path.join(weights_dir, 'weights.h5')
 
 os.makedirs(weights_dir, exist_ok=True)
 
-div2k_train = DIV2K(scale=scale, subset='train', downgrade=downgrade)
-div2k_valid = DIV2K(scale=scale, subset='valid', downgrade=downgrade)
+div2k_train = DIV2K(scale=scale, subset='train', downgrade=downgrade, make_input_img_bw=True)
+div2k_valid = DIV2K(scale=scale, subset='valid', downgrade=downgrade, make_input_img_bw=True)
 
-train_ds = div2k_train.dataset(batch_size=256, random_transform=True, make_input_img_bw=True)
-valid_ds = div2k_valid.dataset(batch_size=1, random_transform=False, repeat_count=1, make_input_img_bw=True)
+train_ds = div2k_train.dataset(batch_size=256, random_transform=True)
+valid_ds = div2k_valid.dataset(batch_size=1, random_transform=False, repeat_count=1)
 
 ############################################### Setup Training stuff ####################################################
 
