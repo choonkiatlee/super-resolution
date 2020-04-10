@@ -35,8 +35,6 @@ def plot_samples(samples, interpolate_lr=False):
 
         if interpolate_lr:
             lr_img = Image.fromarray(lr)
-
-            print(sr.shape[0:2])
             interpolated = lr_img.resize(sr.shape[0:2], resample=Image.BILINEAR)
             lr = np.array(interpolated)
             

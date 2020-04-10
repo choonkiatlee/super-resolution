@@ -55,12 +55,16 @@ class DIV2K:
     def __len__(self):
         return len(self.image_ids)
 
-    def dataset(self, batch_size=16, repeat_count=None, random_transform=True):
+    def dataset(self, batch_size=16, repeat_count=None, random_transform=True, make_training_images_bw = False):
         ds = tf.data.Dataset.zip((self.lr_dataset(), self.hr_dataset()))
         if random_transform:
             ds = ds.map(lambda lr, hr: random_crop(lr, hr, scale=self.scale), num_parallel_calls=AUTOTUNE)
             ds = ds.map(random_rotate, num_parallel_calls=AUTOTUNE)
             ds = ds.map(random_flip, num_parallel_calls=AUTOTUNE)
+
+        if make_training_images_bw:
+            ds = ds.map(lambda lr, hr: make_lr_bw, num_parallel_calls=AUTOTUNE)
+
         ds = ds.batch(batch_size)
         ds = ds.repeat(repeat_count)
         ds = ds.prefetch(buffer_size=AUTOTUNE)
@@ -178,6 +182,9 @@ def random_flip(lr_img, hr_img):
 def random_rotate(lr_img, hr_img):
     rn = tf.random.uniform(shape=(), maxval=4, dtype=tf.int32)
     return tf.image.rot90(lr_img, rn), tf.image.rot90(hr_img, rn)
+
+def make_lr_bw(lr_img, hr_img):
+    return tf.image.rgb_to_grayscale( lr_img ), hr_img
 
 
 # -----------------------------------------------------------
