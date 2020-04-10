@@ -4,8 +4,14 @@ import matplotlib.pyplot as plt
 from PIL import Image
 
 
-def load_image(path):
-    return np.array(Image.open(path))
+def load_image(path, make_input_img_bw=False):
+
+    img = Image.open(path)
+
+    if make_input_img_bw:
+        img = img.convert('L')
+
+    return np.array(img)
 
 
 def plot_sample(lr, sr):

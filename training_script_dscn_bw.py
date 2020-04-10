@@ -71,13 +71,13 @@ from model import resolve_single
 from utils import load_image, plot_samples
 import io
 
-def resolve_and_tensorboard_plot(our_model, lr_image_paths, title=''):
+def resolve_and_tensorboard_plot(our_model, lr_image_paths, title='', make_input_img_bw=False):
 
     samples = []
 
     for lr_image_path in lr_image_paths:
 
-        lr = load_image(lr_image_path)
+        lr = load_image(lr_image_path, make_input_img_bw)
         sr = resolve_single(our_model, lr)
         samples.append((lr,sr))
 
@@ -114,7 +114,7 @@ else:
     )
 
 # resolve_and_tensorboard_plot(our_model, ['demo/0869x4-crop.png', 'demo/0829x4-crop.png', 'demo/0851x4-crop.png'], "Start")
-resolve_and_tensorboard_plot(our_model, ['demo/0869x4-crop.png'], "Start")
+resolve_and_tensorboard_plot(our_model, ['demo/0869x4-crop.png'], "Start", make_input_img_bw=True)
 
 
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
@@ -132,7 +132,7 @@ our_model.fit(
     verbose=1,
 )
 
-resolve_and_tensorboard_plot(our_model, ['demo/0869x4-crop.png'], "End")
+resolve_and_tensorboard_plot(our_model, ['demo/0869x4-crop.png'], "End", make_input_img_bw=True)
 # resolve_and_tensorboard_plot(our_model, ['demo/0869x4-crop.png', 'demo/0829x4-crop.png', 'demo/0851x4-crop.png'], "End")
 
 our_model.save(SAVED_MODEL_DIR)
