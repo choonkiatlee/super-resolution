@@ -110,7 +110,6 @@ if os.path.exists(SAVED_MODEL_DIR) and LOAD_SAVED_MODEL:
         print("Could not load previous model even though there was a save file")
 
 if not our_model:
-
     our_model = model.dscn.dscn_bw(scale=4, n_fe_layers = 32, starting_num_filters = 256)
     our_model.compile(
         optimizer=get_optimizer(), 
