@@ -10,7 +10,8 @@ class DIV2K:
                  subset='train',
                  downgrade='bicubic',
                  images_dir='.div2k/images',
-                 caches_dir='.div2k/caches'):
+                 caches_dir='.div2k/caches',
+                ):
 
         self._ntire_2018 = True
 
@@ -55,15 +56,15 @@ class DIV2K:
     def __len__(self):
         return len(self.image_ids)
 
-    def dataset(self, batch_size=16, repeat_count=None, random_transform=True, make_training_images_bw = False):
+    def dataset(self, batch_size=16, repeat_count=None, random_transform=True, make_input_img_bw=False):
+
+        lr_dataset = self.lr_dataset(channels=1) if self.make_input_img_bw else self.lr_dataset(channels=3) 
+
         ds = tf.data.Dataset.zip((self.lr_dataset(), self.hr_dataset()))
         if random_transform:
             ds = ds.map(lambda lr, hr: random_crop(lr, hr, scale=self.scale), num_parallel_calls=AUTOTUNE)
             ds = ds.map(random_rotate, num_parallel_calls=AUTOTUNE)
             ds = ds.map(random_flip, num_parallel_calls=AUTOTUNE)
-
-        if make_training_images_bw:
-            ds = ds.map(lambda lr, hr: make_lr_bw, num_parallel_calls=AUTOTUNE)
 
         ds = ds.batch(batch_size)
         ds = ds.repeat(repeat_count)
@@ -81,11 +82,11 @@ class DIV2K:
 
         return ds
 
-    def lr_dataset(self):
+    def lr_dataset(self, channels=3):
         if not os.path.exists(self._lr_images_dir()):
             download_archive(self._lr_images_archive(), self.images_dir, extract=True)
 
-        ds = self._images_dataset(self._lr_image_files()).cache(self._lr_cache_file())
+        ds = self._images_dataset(self._lr_image_files(channels=channels)).cache(self._lr_cache_file())
 
         if not os.path.exists(self._lr_cache_index()):
             self._populate_cache(ds, self._lr_cache_file())
@@ -137,10 +138,10 @@ class DIV2K:
             return f'DIV2K_{self.subset}_LR_{self.downgrade}_X{self.scale}.zip'
 
     @staticmethod
-    def _images_dataset(image_files):
+    def _images_dataset(image_files, channels=3):
         ds = tf.data.Dataset.from_tensor_slices(image_files)
         ds = ds.map(tf.io.read_file)
-        ds = ds.map(lambda x: tf.image.decode_png(x, channels=3), num_parallel_calls=AUTOTUNE)
+        ds = ds.map(lambda x: tf.image.decode_png(x, channels=channels), num_parallel_calls=AUTOTUNE)
         return ds
 
     @staticmethod
