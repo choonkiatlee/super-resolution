@@ -102,6 +102,7 @@ def resolve_and_tensorboard_plot(our_model, lr_image_paths, title=''):
 
 
 if os.path.exists(SAVED_MODEL_DIR) and LOAD_SAVED_MODEL:
+    
     print("Loaded previously saved model")
     our_model = tf.keras.models.load_model(SAVED_MODEL_DIR, custom_objects={'psnr': psnr})
 

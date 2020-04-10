@@ -100,13 +100,18 @@ def resolve_and_tensorboard_plot(our_model, lr_image_paths, title='', make_input
 
 ############################################### Load Model and Train ####################################################
 
+our_model = None
 
 if os.path.exists(SAVED_MODEL_DIR) and LOAD_SAVED_MODEL:
-    print("Loaded previously saved model")
-    our_model = tf.keras.models.load_model(SAVED_MODEL_DIR, custom_objects={'psnr': psnr})
+    try:
+        our_model = tf.keras.models.load_model(SAVED_MODEL_DIR, custom_objects={'psnr': psnr})
+        print("Loaded previously saved model")
+    except:
+        print("Could not load previous model even though there was a save file")
 
-else:
-    our_model = model.dscn.dscn_bw(scale=4, n_fe_layers = 12)
+if not our_model:
+    
+    our_model = model.dscn.dscn_bw(scale=4, n_fe_layers = 32, starting_num_filters = 256)
     our_model.compile(
         optimizer=get_optimizer(), 
         loss='mae',
