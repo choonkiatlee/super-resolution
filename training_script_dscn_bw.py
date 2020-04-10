@@ -53,7 +53,7 @@ log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 tb_file_writer = tf.summary.create_file_writer(log_dir)
 
-STEPS_PER_EPOCH = 800//256
+STEPS_PER_EPOCH = 1600//256
 
 lr_schedule = tf.keras.optimizers.schedules.InverseTimeDecay(
   0.001,
@@ -118,7 +118,7 @@ if not our_model:
     )
 
 # resolve_and_tensorboard_plot(our_model, ['demo/0869x4-crop.png', 'demo/0829x4-crop.png', 'demo/0851x4-crop.png'], "Start")
-resolve_and_tensorboard_plot(our_model, ['demo/0869x4-crop.png'], "Start", make_input_img_bw=True)
+resolve_and_tensorboard_plot(our_model, ['demo/0869x4-crop.png', 'demo/0829x4-crop.png', 'demo/0851x4-crop.png'], "Start", make_input_img_bw=True)
 
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
@@ -128,7 +128,7 @@ print("Starting on initial epoch: {0}".format(initial_epoch))
 our_model.fit(
     train_ds, 
     validation_data=valid_ds.take(10), 
-    epochs = 100,
+    epochs = 500,
     steps_per_epoch=STEPS_PER_EPOCH, 
     initial_epoch=initial_epoch,
     callbacks=[
@@ -138,7 +138,7 @@ our_model.fit(
     verbose=1,
 )
 
-resolve_and_tensorboard_plot(our_model, ['demo/0869x4-crop.png'], "End", make_input_img_bw=True)
+resolve_and_tensorboard_plot(our_model, ['demo/0869x4-crop.png', 'demo/0829x4-crop.png', 'demo/0851x4-crop.png'], "End", make_input_img_bw=True)
 # resolve_and_tensorboard_plot(our_model, ['demo/0869x4-crop.png', 'demo/0829x4-crop.png', 'demo/0851x4-crop.png'], "End")
 
 our_model.save(SAVED_MODEL_DIR)

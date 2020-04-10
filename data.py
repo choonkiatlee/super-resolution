@@ -62,8 +62,10 @@ class DIV2K:
     def dataset(self, batch_size=16, repeat_count=None, random_transform=True):
 
         lr_dataset = self.lr_dataset(channels=1) if self.make_input_img_bw else self.lr_dataset(channels=3) 
+        # hr_dataset = self.lr_dataset(channels=3) if self.make_input_img_bw else self.hr_dataset()
+        hr_dataset = self.hr_dataset()
 
-        ds = tf.data.Dataset.zip((lr_dataset, self.hr_dataset()))
+        ds = tf.data.Dataset.zip((lr_dataset, hr_dataset))
         if random_transform:
             ds = ds.map(lambda lr, hr: random_crop(lr, hr, scale=self.scale), num_parallel_calls=AUTOTUNE)
             ds = ds.map(random_rotate, num_parallel_calls=AUTOTUNE)
