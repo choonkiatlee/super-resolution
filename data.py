@@ -144,6 +144,9 @@ class DIV2K:
     def _images_dataset(image_files, channels=3):
         ds = tf.data.Dataset.from_tensor_slices(image_files)
         ds = ds.map(tf.io.read_file)
+
+        print(channels)
+
         ds = ds.map(lambda x: tf.image.decode_png(x, channels=channels), num_parallel_calls=AUTOTUNE)
         return ds
 
