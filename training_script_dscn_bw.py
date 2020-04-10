@@ -120,7 +120,6 @@ if not our_model:
 # resolve_and_tensorboard_plot(our_model, ['demo/0869x4-crop.png', 'demo/0829x4-crop.png', 'demo/0851x4-crop.png'], "Start")
 resolve_and_tensorboard_plot(our_model, ['demo/0869x4-crop.png'], "Start", make_input_img_bw=True)
 
-
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 initial_epoch = our_model.optimizer.iterations.numpy() // STEPS_PER_EPOCH
@@ -132,7 +131,10 @@ our_model.fit(
     epochs = 100,
     steps_per_epoch=STEPS_PER_EPOCH, 
     initial_epoch=initial_epoch,
-    callbacks=[cp_callback, tensorboard_callback],
+    callbacks=[
+        # cp_callback, 
+        tensorboard_callback,
+        ],
     verbose=1,
 )
 
