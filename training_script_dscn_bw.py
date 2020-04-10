@@ -81,7 +81,7 @@ def resolve_and_tensorboard_plot(our_model, lr_image_paths, title='', make_input
         sr = resolve_single(our_model, lr)
         samples.append((lr,sr))
 
-    fig = plot_samples(samples, interpolate_lr=True)
+    fig = plot_samples(samples, interpolate_lr=True, input_img_bw = make_input_img_bw)
 
     buf = io.BytesIO()
     plt.savefig(buf, format='png')
@@ -110,7 +110,7 @@ if os.path.exists(SAVED_MODEL_DIR) and LOAD_SAVED_MODEL:
         print("Could not load previous model even though there was a save file")
 
 if not our_model:
-    
+
     our_model = model.dscn.dscn_bw(scale=4, n_fe_layers = 32, starting_num_filters = 256)
     our_model.compile(
         optimizer=get_optimizer(), 
