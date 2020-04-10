@@ -23,7 +23,7 @@ scale = 4
 # Downgrade operator
 downgrade = 'bicubic'
 
-SAVED_MODEL_DIR = 'saved_model_dscn'
+SAVED_MODEL_DIR = 'saved_model_dscn_bw'
 
 ############################################### Load Data Set ####################################################
 
