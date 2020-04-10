@@ -11,6 +11,7 @@ class DIV2K:
                  downgrade='bicubic',
                  images_dir='.div2k/images',
                  caches_dir='.div2k/caches',
+                 make_input_img_bw=False,
                 ):
 
         self._ntire_2018 = True
@@ -50,15 +51,17 @@ class DIV2K:
         self.images_dir = images_dir
         self.caches_dir = caches_dir
 
+        self.make_input_img_bw = make_input_img_bw
+
         os.makedirs(images_dir, exist_ok=True)
         os.makedirs(caches_dir, exist_ok=True)
 
     def __len__(self):
         return len(self.image_ids)
 
-    def dataset(self, batch_size=16, repeat_count=None, random_transform=True, make_input_img_bw=False):
+    def dataset(self, batch_size=16, repeat_count=None, random_transform=True):
 
-        lr_dataset = self.lr_dataset(channels=1) if make_input_img_bw else self.lr_dataset(channels=3) 
+        lr_dataset = self.lr_dataset(channels=1) if self.make_input_img_bw else self.lr_dataset(channels=3) 
 
         ds = tf.data.Dataset.zip((lr_dataset, self.hr_dataset()))
         if random_transform:
@@ -97,7 +100,7 @@ class DIV2K:
         return os.path.join(self.caches_dir, f'DIV2K_{self.subset}_HR.cache')
 
     def _lr_cache_file(self):
-        return os.path.join(self.caches_dir, f'DIV2K_{self.subset}_LR_{self.downgrade}_X{self.scale}.cache')
+        return os.path.join(self.caches_dir, f'DIV2K_{self.subset}_LR_{self.downgrade}_X{self.scale}_BW{self.make_input_img_bw}.cache')
 
     def _hr_cache_index(self):
         return f'{self._hr_cache_file()}.index'
