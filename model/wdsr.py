@@ -7,7 +7,6 @@ from model.common import normalize, denormalize, pixel_shuffle
 
 import tensorflow as tf
 
-
 def wdsr_a(scale, num_filters=32, num_res_blocks=8, res_block_expansion=4, res_block_scaling=None):
     return wdsr(scale, num_filters, num_res_blocks, res_block_expansion, res_block_scaling, res_block_a)
 
